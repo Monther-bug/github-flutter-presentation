@@ -240,14 +240,70 @@
     background: var(--bg-2);
     border: 1px solid var(--border);
     border-radius: 18px;
-    padding: 40px 32px;
+    padding: 56px 32px 36px;
     margin-bottom: 28px;
     width: 100%;
     box-shadow: 0 12px 36px rgba(0,0,0,0.35);
-    min-height: 220px;
+    min-height: 240px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: relative;
+  }
+
+  /* ===== Per-question timer (inside scenario card) ===== */
+  .timer-bar {
+    position: absolute;
+    top: 18px;
+    inset-inline-start: 24px;
+    inset-inline-end: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .timer-icon {
+    font-size: 18px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .timer-bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--bg-3);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .timer-bar-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 3px;
+    transition: background-color 0.3s;
+    width: 100%;
+    transform-origin: left center;
+  }
+  html[dir="rtl"] .timer-bar-fill { transform-origin: right center; }
+  .timer-bar-fill.warning { background: var(--yellow); }
+  .timer-bar-fill.danger {
+    background: var(--red);
+    animation: timerPulse 0.6s ease-in-out infinite alternate;
+  }
+  @keyframes timerPulse {
+    from { opacity: 0.75; box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+    to   { opacity: 1;    box-shadow: 0 0 14px 2px rgba(255, 107, 107, 0.55); }
+  }
+  .timer-seconds {
+    font-family: 'SF Mono', Monaco, monospace;
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--text);
+    min-width: 28px;
+    text-align: end;
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+  .timer-seconds.danger {
+    color: var(--red);
+    animation: timerPulse 0.6s ease-in-out infinite alternate;
   }
   .scenario.shake { animation: shake 0.5s; }
   @keyframes shake {
@@ -581,6 +637,13 @@
     </div>
 
     <div class="scenario" id="scenario">
+      <div class="timer-bar">
+        <span class="timer-icon">⏱</span>
+        <div class="timer-bar-track">
+          <div class="timer-bar-fill" id="timer-fill"></div>
+        </div>
+        <span class="timer-seconds" id="timer-seconds">10</span>
+      </div>
       <div class="scenario-emoji" id="emoji">⚡</div>
       <div class="scenario-text" id="text">Loading…</div>
     </div>
@@ -646,6 +709,7 @@
       ans500Name: 'Server Error',
       feedbackCorrect: '✓ Correct!',
       feedbackWrong: '✗ Nope — it was {code}',
+      feedbackTimeUp: '⏱ Time up! It was {code}',
       gameOver: '🎮 Game Over',
       newBest: '✨ NEW PERSONAL BEST!',
       playAgain: 'PLAY AGAIN',
@@ -668,6 +732,7 @@
       ans500Name: 'خطأ بالخادم',
       feedbackCorrect: '✓ إجابة صحيحة!',
       feedbackWrong: '✗ خطأ — الإجابة كانت {code}',
+      feedbackTimeUp: '⏱ انتهى الوقت! الإجابة كانت {code}',
       gameOver: '🎮 انتهت اللعبة',
       newBest: '✨ أفضل نتيجة شخصية جديدة!',
       playAgain: 'العب مرة أخرى',
@@ -763,6 +828,7 @@
   ];
 
   const TOTAL_QUESTIONS = 10;
+  const TIME_PER_QUESTION = 10; // seconds — auto-fail when it hits 0
 
   // ===== State =====
   const state = {
@@ -877,12 +943,14 @@
       btn.classList.remove('correct', 'wrong');
     });
     $('scenario').classList.remove('shake', 'pulse-good');
+    startTimer();
   }
 
   function answer(code) {
     if (state.locked) return;
     if (activeScreen() !== 'game') return;
 
+    stopTimer();
     state.locked = true;
     const q = state.questions[state.current];
     const isCorrect = code === q.code;
@@ -922,6 +990,7 @@
   let lastScoreWasBest = false;
 
   function endGame() {
+    stopTimer();
     lastScoreWasBest = maybeSetBest(state.score);
     showScreen('end');
     renderEndScreen();
@@ -935,6 +1004,79 @@
     $('rank-title').textContent = rankData.title;
     $('rank-msg').textContent = rankData.msg;
     $('new-best').textContent = lastScoreWasBest ? t('newBest') : '';
+  }
+
+  // ===== Per-question timer =====
+  let timerInterval = null;
+  let timeLeft = TIME_PER_QUESTION;
+
+  function startTimer() {
+    stopTimer();
+    const startedAt = Date.now();
+    const totalMs = TIME_PER_QUESTION * 1000;
+    const fill = $('timer-fill');
+    const secs = $('timer-seconds');
+
+    timeLeft = TIME_PER_QUESTION;
+    fill.style.width = '100%';
+    fill.classList.remove('warning', 'danger');
+    secs.classList.remove('danger');
+    secs.textContent = timeLeft;
+
+    timerInterval = setInterval(() => {
+      const elapsed = Date.now() - startedAt;
+      const remainingMs = Math.max(0, totalMs - elapsed);
+      const pct = (remainingMs / totalMs) * 100;
+      const remainingSec = Math.ceil(remainingMs / 1000);
+
+      fill.style.width = pct + '%';
+      if (remainingSec !== timeLeft) {
+        timeLeft = remainingSec;
+        secs.textContent = timeLeft;
+      }
+      fill.classList.toggle('warning', remainingMs < 5000 && remainingMs >= 3000);
+      const isDanger = remainingMs < 3000;
+      fill.classList.toggle('danger', isDanger);
+      secs.classList.toggle('danger', isDanger);
+
+      if (remainingMs <= 0) {
+        stopTimer();
+        handleTimeUp();
+      }
+    }, 100);
+  }
+
+  function stopTimer() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+  }
+
+  function handleTimeUp() {
+    if (state.locked) return;
+    state.locked = true;
+    const q = state.questions[state.current];
+
+    $('feedback').textContent = t('feedbackTimeUp').replace('{code}', q.code);
+    $('feedback').className = 'feedback show bad';
+    $('scenario').classList.add('shake');
+
+    document.querySelectorAll('.ans').forEach(btn => {
+      btn.disabled = true;
+      if (parseInt(btn.dataset.code, 10) === q.code) btn.classList.add('correct');
+    });
+
+    $('progress-fill').style.width = ((state.current + 1) / TOTAL_QUESTIONS * 100) + '%';
+
+    setTimeout(() => {
+      state.current++;
+      if (state.current >= state.questions.length) {
+        endGame();
+      } else {
+        renderQuestion();
+      }
+    }, 1700);
   }
 
   // ===== Effects =====
