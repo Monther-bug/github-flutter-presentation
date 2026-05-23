@@ -1291,41 +1291,37 @@
       </div>
     </section>
 
-    <!-- ===== SLIDE 8: FUTUREBUILDER ===== -->
+    <!-- ===== SLIDE 10: FUTUREBUILDER ===== -->
     <section class="slide">
       <span class="slide-number">10 / 10</span>
       <h2 class="slide-title">Putting It Together: <span class="accent-teal">FutureBuilder</span></h2>
       <p class="slide-text">
-        Once we have our <code class="inline">Future&lt;User&gt;</code>, we use a
-        <strong>FutureBuilder</strong> widget in our UI. It automatically shows a
-        <span class="hl-orange">loading spinner</span> while waiting for the HTTP request,
-        and then displays the data when it <span class="hl-teal">successfully arrives</span>!
+        <strong>FutureBuilder</strong> is a magic Flutter widget that watches your
+        Future for you. You only need to tell it <span class="hl-orange">what to show while loading</span>,
+        and <span class="hl-teal">what to show when the data arrives</span>. That&rsquo;s it!
       </p>
       <div class="state-flow">
         <div class="state-card loading">
           <div class="loading-spinner"></div>
-          <div class="state-label">Waiting…</div>
-          <div class="state-sub">ConnectionState.waiting</div>
+          <div class="state-label">While loading…</div>
+          <div class="state-sub">show a spinner</div>
         </div>
         <span class="state-arrow">→</span>
         <div class="state-card done">
           <span class="state-icon">✓</span>
-          <div class="state-label">Done!</div>
-          <div class="state-sub">snapshot.hasData</div>
+          <div class="state-label">Got the data!</div>
+          <div class="state-sub">show your text</div>
         </div>
       </div>
       <div class="code-block">
         <span class="code-lang">Dart</span>
-<pre><span class="cls">FutureBuilder</span>&lt;<span class="cls">User</span>&gt;(
+<pre><span class="cls">FutureBuilder</span>(
   future: <span class="fn">fetchUser</span>(),
   builder: (context, snapshot) {
-    <span class="kw">if</span> (snapshot.connectionState == <span class="cls">ConnectionState</span>.waiting) {
-      <span class="kw">return</span> <span class="kw">const</span> <span class="cls">CircularProgressIndicator</span>();
-    }
     <span class="kw">if</span> (snapshot.hasData) {
-      <span class="kw">return</span> <span class="cls">Text</span>(<span class="str">'Hello, ${snapshot.data!.name}!'</span>);
+      <span class="kw">return</span> <span class="cls">Text</span>(<span class="str">'Hello, ${snapshot.data.name}!'</span>);  <span class="com">// Done!</span>
     }
-    <span class="kw">return</span> <span class="kw">const</span> <span class="cls">Text</span>(<span class="str">'Something went wrong.'</span>);
+    <span class="kw">return</span> <span class="cls">CircularProgressIndicator</span>();  <span class="com">// Still loading…</span>
   },
 )</pre>
       </div>
