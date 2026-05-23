@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Status Code Showdown — A funny HTTP quiz</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0d1117;
+    --bg-2: #161b22;
+    --bg-3: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-2: #8b949e;
+    --purple: #a78bfa;
+    --purple-dim: #7c3aed;
+    --teal: #2dd4bf;
+    --green: #3fb950;
+    --orange: #f97316;
+    --red: #ff6b6b;
+    --yellow: #fbbf24;
+  }
+
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 18% 12%, rgba(167, 139, 250, 0.14), transparent 50%),
+      radial-gradient(circle at 82% 88%, rgba(45, 212, 191, 0.14), transparent 50%);
+    color: var(--text);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    min-height: 100vh;
+  }
+
+  /* Brand bar */
+  .brand {
+    position: fixed;
+    top: 20px;
+    left: 24px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-2);
+    letter-spacing: 2px;
+    z-index: 10;
+  }
+  .brand .dot { color: var(--teal); margin-right: 6px; }
+
+  /* Screens */
+  .screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 760px;
+    animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .screen.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== Welcome ===== */
+  #welcome h1 {
+    font-size: clamp(40px, 7vw, 84px);
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 0%, #c4b5fd 45%, #5eead4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .tagline {
+    font-size: 19px;
+    color: var(--text-2);
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+  .how-to {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 28px;
+    margin-bottom: 36px;
+    max-width: 520px;
+    text-align: left;
+  }
+  .how-to .h {
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+  .how-to ul { list-style: none; padding: 0; }
+  .how-to li {
+    color: var(--text-2);
+    line-height: 1.7;
+    font-size: 14px;
+    padding-left: 22px;
+    position: relative;
+  }
+  .how-to li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--purple);
+    font-weight: 700;
+  }
+  .best-banner {
+    font-size: 13px;
+    color: var(--yellow);
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .best-banner:empty { display: none; }
+
+  /* Big button */
+  .btn-primary {
+    background: linear-gradient(135deg, var(--purple), var(--teal));
+    color: white;
+    border: none;
+    padding: 18px 52px;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 10px 28px rgba(124, 58, 237, 0.4);
+    font-family: inherit;
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 16px 36px rgba(124, 58, 237, 0.55);
+  }
+  .btn-primary:active { transform: scale(0.97); }
+
+  /* ===== Game screen ===== */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 24px;
+    padding: 0 4px;
+  }
+  .stat {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--text-2);
+    text-transform: uppercase;
+  }
+  .stat .val {
+    color: var(--text);
+    font-size: 22px;
+    font-family: 'SF Mono', Monaco, monospace;
+    font-weight: 800;
+    margin-left: 6px;
+    vertical-align: -2px;
+  }
+  .progress {
+    flex: 1;
+    height: 6px;
+    background: var(--bg-2);
+    border-radius: 3px;
+    margin: 0 24px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple), var(--teal));
+    border-radius: 3px;
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .scenario {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 40px 32px;
+    margin-bottom: 28px;
+    width: 100%;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.35);
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .scenario.shake { animation: shake 0.5s; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-12px); }
+    40% { transform: translateX(12px); }
+    60% { transform: translateX(-8px); }
+    80% { transform: translateX(8px); }
+  }
+  .scenario.pulse-good { animation: pulseGood 0.6s; }
+  @keyframes pulseGood {
+    0% { transform: scale(1); box-shadow: 0 12px 36px rgba(0,0,0,0.35); }
+    50% { transform: scale(1.02); box-shadow: 0 20px 50px rgba(63, 185, 80, 0.4); }
+    100% { transform: scale(1); box-shadow: 0 12px 36px rgba(0,0,0,0.35); }
+  }
+
+  .scenario-emoji {
+    font-size: 72px;
+    line-height: 1;
+    margin-bottom: 18px;
+  }
+  .scenario-text {
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--text);
+    max-width: 620px;
+    margin: 0 auto;
+    font-weight: 500;
+  }
+
+  .answers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  .ans {
+    background: var(--bg-2);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-family: inherit;
+    position: relative;
+  }
+  .ans:hover:not(:disabled) {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.45);
+  }
+  .ans:active:not(:disabled) { transform: translateY(-2px) scale(0.98); }
+  .ans:disabled { cursor: not-allowed; opacity: 0.4; }
+
+  .ans-num {
+    font-size: 36px;
+    font-weight: 900;
+    font-family: 'SF Mono', Monaco, monospace;
+    line-height: 1;
+  }
+  .ans-name {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+  .ans-key {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 10px;
+    color: var(--text-2);
+    font-family: 'SF Mono', monospace;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    opacity: 0.6;
+  }
+
+  .ans-200 { border-color: var(--green); }
+  .ans-200 .ans-num { color: var(--green); }
+  .ans-200:hover:not(:disabled) {
+    background: rgba(63, 185, 80, 0.08);
+    box-shadow: 0 12px 28px rgba(63, 185, 80, 0.25);
+  }
+
+  .ans-404 { border-color: var(--yellow); }
+  .ans-404 .ans-num { color: var(--yellow); }
+  .ans-404:hover:not(:disabled) {
+    background: rgba(251, 191, 36, 0.08);
+    box-shadow: 0 12px 28px rgba(251, 191, 36, 0.25);
+  }
+
+  .ans-500 { border-color: var(--red); }
+  .ans-500 .ans-num { color: var(--red); }
+  .ans-500:hover:not(:disabled) {
+    background: rgba(255, 107, 107, 0.08);
+    box-shadow: 0 12px 28px rgba(255, 107, 107, 0.25);
+  }
+
+  .ans.correct {
+    background: var(--green) !important;
+    border-color: var(--green) !important;
+    opacity: 1 !important;
+    animation: bouncePop 0.4s;
+  }
+  .ans.correct .ans-num,
+  .ans.correct .ans-name,
+  .ans.correct .ans-key { color: white !important; }
+
+  .ans.wrong {
+    background: var(--red) !important;
+    border-color: var(--red) !important;
+    opacity: 1 !important;
+  }
+  .ans.wrong .ans-num,
+  .ans.wrong .ans-name,
+  .ans.wrong .ans-key { color: white !important; }
+
+  @keyframes bouncePop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+
+  .feedback {
+    height: 28px;
+    margin-top: 18px;
+    font-size: 18px;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .feedback.show { opacity: 1; }
+  .feedback.good { color: var(--green); }
+  .feedback.bad { color: var(--red); }
+
+  /* Confetti */
+  .confetti {
+    position: fixed;
+    top: -50px;
+    font-size: 32px;
+    animation: fall linear forwards;
+    pointer-events: none;
+    z-index: 100;
+  }
+  @keyframes fall {
+    from { transform: translateY(0) rotate(0deg); opacity: 1; }
+    to   { transform: translateY(110vh) rotate(720deg); opacity: 0.5; }
+  }
+
+  /* ===== End screen ===== */
+  .end-eyebrow {
+    color: var(--teal);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    padding: 8px 18px;
+    background: rgba(45, 212, 191, 0.08);
+    border: 1px solid rgba(45, 212, 191, 0.3);
+    border-radius: 30px;
+  }
+  .final-score {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .final-score .num {
+    font-size: clamp(72px, 12vw, 132px);
+    font-weight: 900;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--purple), var(--teal));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -3px;
+  }
+  .final-score .total {
+    color: var(--text-2);
+    font-size: 32px;
+    font-weight: 600;
+  }
+  .rank-emoji { font-size: 56px; line-height: 1; margin-bottom: 12px; }
+  .rank-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+  .rank-msg {
+    font-size: 17px;
+    color: var(--text-2);
+    margin-bottom: 12px;
+    max-width: 480px;
+  }
+  .new-best {
+    color: var(--yellow);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    padding: 6px 14px;
+    background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(251, 191, 36, 0.35);
+    border-radius: 20px;
+    display: inline-block;
+  }
+  .new-best:empty { display: none; margin-bottom: 0; }
+  .end-actions {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin-top: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn-back {
+    color: var(--text-2);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 18px;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    transition: all 0.2s;
+  }
+  .btn-back:hover {
+    color: var(--text);
+    border-color: var(--purple);
+  }
+
+  /* Footer hint */
+  .key-hint {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: var(--text-2);
+    opacity: 0.55;
+    letter-spacing: 1px;
+  }
+  .key-hint .k {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'SF Mono', monospace;
+    font-size: 10px;
+    margin: 0 2px;
+  }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .scenario { padding: 28px 20px; min-height: 180px; }
+    .scenario-emoji { font-size: 56px; }
+    .scenario-text { font-size: 18px; }
+    .ans-num { font-size: 28px; }
+    .answers { gap: 10px; }
+    .ans { padding: 18px 8px; }
+    .progress { margin: 0 12px; }
+    .stat .val { font-size: 18px; }
+    .ans-key { display: none; }
+    .key-hint { display: none; }
+    .brand { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="brand"><span class="dot">●</span>STATUS CODE SHOWDOWN</div>
+
+  <!-- ===== Welcome ===== -->
+  <section id="welcome" class="screen active">
+    <h1>STATUS CODE<br>SHOWDOWN</h1>
+    <p class="tagline">Can you guess the right HTTP status code?<br>Read the scenario. Pick fast. Score big. 🏆</p>
+    <div class="how-to">
+      <div class="h">📖 How to play</div>
+      <ul>
+        <li>You'll get <strong>10 silly scenarios</strong>.</li>
+        <li>Pick the right code: <strong style="color:var(--green)">200</strong>, <strong style="color:var(--yellow)">404</strong>, or <strong style="color:var(--red)">500</strong>.</li>
+        <li>Hint: 200 = "all good", 404 = "doesn't exist", 500 = "server broke".</li>
+      </ul>
+    </div>
+    <div class="best-banner" id="best-welcome"></div>
+    <button class="btn-primary" id="btn-start">START GAME</button>
+  </section>
+
+  <!-- ===== Game ===== -->
+  <section id="game" class="screen">
+    <div class="top-bar">
+      <div class="stat">Score<span class="val" id="score">0</span></div>
+      <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="stat"><span class="val" id="q-num">1</span> / 10</div>
+    </div>
+
+    <div class="scenario" id="scenario">
+      <div class="scenario-emoji" id="emoji">⚡</div>
+      <div class="scenario-text" id="text">Loading…</div>
+    </div>
+
+    <div class="answers">
+      <button class="ans ans-200" data-code="200">
+        <span class="ans-key">1</span>
+        <span class="ans-num">200</span>
+        <span class="ans-name">OK</span>
+      </button>
+      <button class="ans ans-404" data-code="404">
+        <span class="ans-key">2</span>
+        <span class="ans-num">404</span>
+        <span class="ans-name">Not Found</span>
+      </button>
+      <button class="ans ans-500" data-code="500">
+        <span class="ans-key">3</span>
+        <span class="ans-num">500</span>
+        <span class="ans-name">Server Error</span>
+      </button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+  </section>
+
+  <!-- ===== End ===== -->
+  <section id="end" class="screen">
+    <div class="end-eyebrow">🎮 Game Over</div>
+    <div class="final-score">
+      <span class="num" id="final-num">0</span>
+      <span class="total">/ 10</span>
+    </div>
+    <div class="rank-emoji" id="rank-emoji">🏆</div>
+    <div class="rank-title" id="rank-title">HTTP Grandmaster</div>
+    <div class="rank-msg" id="rank-msg">You ARE the status code.</div>
+    <div class="new-best" id="new-best"></div>
+    <div class="end-actions">
+      <button class="btn-primary" id="btn-restart">PLAY AGAIN</button>
+      <a class="btn-back" href="../">← Back to Lecture</a>
+    </div>
+  </section>
+
+  <div class="key-hint">
+    Press <span class="k">1</span> <span class="k">2</span> <span class="k">3</span> to answer · <span class="k">Enter</span> to start/restart
+  </div>
+
+<script>
+  // ===== Scenarios (a bit silly on purpose) =====
+  const SCENARIOS = [
+    { emoji: '📦', text: 'You ask: "Give me product #1." Server: "Here you go!"',                        code: 200 },
+    { emoji: '🦄', text: 'You GET /unicorns/1. There are no unicorns on this server.',                   code: 404 },
+    { emoji: '🔥', text: 'You ask for products. The data center is literally on fire.',                  code: 500 },
+    { emoji: '☕', text: 'You order a latte. The barista hands it over with a smile.',                   code: 200 },
+    { emoji: '🍕', text: 'You ask for /pizza/menu. That URL doesn\'t exist on this site.',               code: 404 },
+    { emoji: '💥', text: 'You ask for users. The database just exploded mid-request.',                   code: 500 },
+    { emoji: '🐱', text: 'You GET /cats/cute. Server returns 10 very cute cats.',                        code: 200 },
+    { emoji: '🤖', text: 'You ask the AI server something. It overloaded and crashed.',                  code: 500 },
+    { emoji: '🛍️', text: 'You request /products/42. Server says: "Item 42, coming up!"',                code: 200 },
+    { emoji: '🔍', text: 'You ask for /admin/secret-pizza-menu. No such page exists.',                   code: 404 },
+    { emoji: '⚡', text: 'Server got struck by lightning while handling your request.',                  code: 500 },
+    { emoji: '🚫', text: 'You misspelled the URL: /produts/1 (missing the c).',                          code: 404 },
+    { emoji: '🐛', text: 'A bug in the server code made the whole thing crash.',                         code: 500 },
+    { emoji: '🎯', text: 'Your request hit the right endpoint. Everything works perfectly.',             code: 200 },
+    { emoji: '🍔', text: 'You GET /burger/123, but burger #123 was deleted last year.',                  code: 404 },
+    { emoji: '🚀', text: 'Your app fetches the homepage. Server returns the homepage.',                  code: 200 },
+    { emoji: '👻', text: 'You ask for a friend\'s old blog post. The URL is gone forever.',              code: 404 },
+    { emoji: '💣', text: 'The server\'s memory ran out and it blew up mid-response.',                    code: 500 },
+    { emoji: '🎁', text: 'You request a gift list from the API. Server delivers it.',                    code: 200 },
+    { emoji: '😱', text: 'The server tried to divide by zero and panicked.',                             code: 500 },
+  ];
+
+  const RANKS = [
+    { min: 10, emoji: '🏆', title: 'HTTP GRANDMASTER',     msg: 'You ARE the status code. Untouchable.' },
+    { min: 9,  emoji: '🚀', title: 'Backend Wizard',        msg: 'Your responses are 200 OK across the board.' },
+    { min: 7,  emoji: '💪', title: 'Solid Dev',             msg: "You'd survive any code review." },
+    { min: 5,  emoji: '🤔', title: 'Junior Dev',            msg: 'Decent! Maybe revisit slide 7 once.' },
+    { min: 3,  emoji: '🚨', title: 'Throwing 500s',         msg: 'The server keeps catching fire. Coffee?' },
+    { min: 0,  emoji: '💀', title: 'Total System Crash',    msg: 'You crashed harder than the server did.' },
+  ];
+
+  const TOTAL_QUESTIONS = 10;
+
+  // ===== State =====
+  const state = {
+    questions: [],
+    current: 0,
+    score: 0,
+    locked: false,
+  };
+
+  // ===== DOM =====
+  const $ = (id) => document.getElementById(id);
+  const screens = { welcome: $('welcome'), game: $('game'), end: $('end') };
+
+  function showScreen(name) {
+    Object.values(screens).forEach(s => s.classList.remove('active'));
+    screens[name].classList.add('active');
+  }
+
+  function activeScreen() {
+    return Object.entries(screens).find(([, el]) => el.classList.contains('active'))[0];
+  }
+
+  // ===== High score (localStorage) =====
+  const BEST_KEY = 'status-code-showdown-best';
+  function getBest() { return parseInt(localStorage.getItem(BEST_KEY) || '0', 10); }
+  function maybeSetBest(score) {
+    const prev = getBest();
+    if (score > prev) {
+      localStorage.setItem(BEST_KEY, String(score));
+      return true;
+    }
+    return false;
+  }
+  function renderBestOnWelcome() {
+    const best = getBest();
+    $('best-welcome').textContent = best > 0 ? `🏆 Personal best: ${best} / ${TOTAL_QUESTIONS}` : '';
+  }
+
+  // ===== Game flow =====
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function startGame() {
+    state.questions = shuffle(SCENARIOS).slice(0, TOTAL_QUESTIONS);
+    state.current = 0;
+    state.score = 0;
+    showScreen('game');
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    state.locked = false;
+    const q = state.questions[state.current];
+    $('emoji').textContent = q.emoji;
+    $('text').textContent = q.text;
+    $('score').textContent = state.score;
+    $('q-num').textContent = state.current + 1;
+    $('progress-fill').style.width = ((state.current) / TOTAL_QUESTIONS * 100) + '%';
+    $('feedback').textContent = '';
+    $('feedback').className = 'feedback';
+    document.querySelectorAll('.ans').forEach(btn => {
+      btn.disabled = false;
+      btn.classList.remove('correct', 'wrong');
+    });
+    $('scenario').classList.remove('shake', 'pulse-good');
+  }
+
+  function answer(code) {
+    if (state.locked) return;
+    if (activeScreen() !== 'game') return;
+
+    state.locked = true;
+    const q = state.questions[state.current];
+    const isCorrect = code === q.code;
+
+    if (isCorrect) {
+      state.score++;
+      $('feedback').textContent = '✓ Correct!';
+      $('feedback').className = 'feedback show good';
+      $('scenario').classList.add('pulse-good');
+      confettiRain();
+    } else {
+      $('feedback').textContent = `✗ Nope — it was ${q.code}`;
+      $('feedback').className = 'feedback show bad';
+      $('scenario').classList.add('shake');
+    }
+
+    $('score').textContent = state.score;
+    $('progress-fill').style.width = ((state.current + 1) / TOTAL_QUESTIONS * 100) + '%';
+
+    document.querySelectorAll('.ans').forEach(btn => {
+      btn.disabled = true;
+      const c = parseInt(btn.dataset.code, 10);
+      if (c === q.code) btn.classList.add('correct');
+      else if (c === code) btn.classList.add('wrong');
+    });
+
+    setTimeout(() => {
+      state.current++;
+      if (state.current >= state.questions.length) {
+        endGame();
+      } else {
+        renderQuestion();
+      }
+    }, 1700);
+  }
+
+  function endGame() {
+    const rank = RANKS.find(r => state.score >= r.min);
+    $('final-num').textContent = state.score;
+    $('rank-emoji').textContent = rank.emoji;
+    $('rank-title').textContent = rank.title;
+    $('rank-msg').textContent = rank.msg;
+    $('new-best').textContent = maybeSetBest(state.score) ? '✨ NEW PERSONAL BEST!' : '';
+    showScreen('end');
+  }
+
+  // ===== Effects =====
+  function confettiRain() {
+    const emojis = ['🎉', '✨', '🎊', '⭐', '💯', '🌟'];
+    for (let i = 0; i < 18; i++) {
+      const el = document.createElement('div');
+      el.className = 'confetti';
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.animationDuration = (1.2 + Math.random() * 0.8) + 's';
+      el.style.animationDelay = (Math.random() * 0.4) + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2200);
+    }
+  }
+
+  // ===== Wire up =====
+  $('btn-start').addEventListener('click', startGame);
+  $('btn-restart').addEventListener('click', startGame);
+  document.querySelectorAll('.ans').forEach(btn => {
+    btn.addEventListener('click', () => answer(parseInt(btn.dataset.code, 10)));
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const screen = activeScreen();
+    if (screen === 'game') {
+      if (e.key === '1') { e.preventDefault(); answer(200); }
+      else if (e.key === '2') { e.preventDefault(); answer(404); }
+      else if (e.key === '3') { e.preventDefault(); answer(500); }
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (screen === 'welcome' || screen === 'end') startGame();
+    }
+  });
+
+  // Init
+  renderBestOnWelcome();
+</script>
+</body>
+</html>

@@ -36,6 +36,20 @@ they introduce the concept and the response structure visually before any
 Dart code appears. Slide 11 closes the lesson with three difficulty-tiered
 build challenges (Easy / Medium / Hard) so students can put it all together.
 
+## 🎯 Bonus: Status Code Showdown game
+
+A standalone in-browser quiz that drills HTTP status codes through silly
+scenarios — "The data center caught fire" → **500**, "You asked for
+/unicorns/1" → **404**, etc.
+
+- 10 randomized questions per run
+- Score tracking with a personal best in localStorage
+- Funny end-of-game ranks (`HTTP GRANDMASTER` → `Total System Crash`)
+- Keyboard play: `1` / `2` / `3` to answer, `Enter` to start/restart
+
+Play at [`game/index.html`](game/index.html) — linked from slide 11 of the
+deck as a warm-up before the build challenges.
+
 ## Design
 
 - Dark slate/navy theme with GitHub-style purple and teal accents.
