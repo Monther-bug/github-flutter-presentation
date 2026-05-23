@@ -907,6 +907,126 @@
     gap: 6px;
   }
 
+  /* ===== Slide 3: GitHub Issue mockup + side-by-side ===== */
+  .s3-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+    align-items: start;
+    margin-top: 8px;
+  }
+  .s3-grid .examples,
+  .s3-grid .push-command {
+    max-width: 100%;
+    margin-top: 0;
+  }
+  .s3-grid-label {
+    font-size: 11px;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .issue-mockup {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.25);
+  }
+  .issue-header-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .issue-status {
+    background: rgba(63, 185, 80, 0.15);
+    color: var(--green);
+    padding: 4px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px solid rgba(63, 185, 80, 0.4);
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .issue-status::before { content: '●'; font-size: 8px; }
+  .issue-id {
+    color: var(--text-2);
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 12px;
+  }
+  .issue-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.35;
+  }
+  .issue-meta {
+    font-size: 12px;
+    color: var(--text-2);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .avatar-mini {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--teal), var(--purple));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 10px;
+    color: white;
+  }
+  .issue-labels {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .label-tag {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .label-tag.bug {
+    background: rgba(255, 95, 87, 0.15);
+    color: #ff7b72;
+    border: 1px solid rgba(255, 95, 87, 0.3);
+  }
+  .label-tag.high {
+    background: rgba(249, 115, 22, 0.15);
+    color: var(--orange);
+    border: 1px solid rgba(249, 115, 22, 0.3);
+  }
+  .issue-body {
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.6;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+
+  /* ===== Slide 4: branch merge graph (SVG) ===== */
+  .branch-graph {
+    width: 100%;
+    max-width: 580px;
+    height: auto;
+    display: block;
+    margin: 4px auto 18px;
+  }
+
   /* ===== Code block ===== */
   .code-block {
     background: #010409;
@@ -1179,25 +1299,49 @@
       <span class="slide-number">03 / 11</span>
       <h2 class="slide-title">Issues, <span class="accent">Branch Names</span> &amp; Pushing</h2>
       <p class="slide-text">
-        An <strong>Issue</strong> is a ticket describing a bug or a new feature &mdash; a written record of work to do.
-        When you start working on an issue, name your branch based on its purpose using
-        <span class="hl-purple">clear prefixes</span> so your teammates instantly know what the branch is for.
+        An <strong>Issue</strong> is a ticket describing a bug or new feature. Name your branch
+        with a <span class="hl-purple">clear prefix</span> so teammates know what it&rsquo;s for.
       </p>
-      <div class="examples">
-        <div class="example-item">
-          <span class="example-tag">feature</span>
-          <span>feature/login-screen</span>
+      <div class="s3-grid">
+        <div>
+          <div class="s3-grid-label">🎫 This is an Issue on GitHub</div>
+          <div class="issue-mockup">
+            <div class="issue-header-row">
+              <span class="issue-status">Open</span>
+              <span class="issue-id">#42</span>
+            </div>
+            <h3 class="issue-title">Login screen crashes on first launch</h3>
+            <div class="issue-meta">
+              <span class="avatar-mini">A</span>
+              <span>alex opened this 2 days ago</span>
+            </div>
+            <div class="issue-labels">
+              <span class="label-tag bug">🐛 bug</span>
+              <span class="label-tag high">🔥 priority-high</span>
+            </div>
+            <div class="issue-body">
+              When users tap &ldquo;Login&rdquo; on a fresh install, the app
+              force-closes. We need to handle the missing-token case.
+            </div>
+          </div>
         </div>
-        <div class="example-item bugfix">
-          <span class="example-tag">bugfix</span>
-          <span>bugfix/crash-on-start</span>
+        <div>
+          <div class="s3-grid-label">🌿 Name your branch like this</div>
+          <div class="examples">
+            <div class="example-item">
+              <span class="example-tag">feature</span>
+              <span>feature/login-screen</span>
+            </div>
+            <div class="example-item bugfix">
+              <span class="example-tag">bugfix</span>
+              <span>bugfix/crash-on-start</span>
+            </div>
+          </div>
+          <div class="s3-grid-label" style="margin-top: 24px;">⬆️ Then push it to GitHub</div>
+          <div class="push-command">
+            git push origin <span class="arg">your-branch-name</span>
+          </div>
         </div>
-      </div>
-      <p class="slide-text" style="margin-top: 26px;">
-        When your code is ready, <strong>push it to GitHub</strong> so your team can see it:
-      </p>
-      <div class="push-command">
-        git push origin <span class="arg">your-branch-name</span>
       </div>
     </section>
 
@@ -1211,6 +1355,20 @@
         The team <span class="hl-purple">reviews the code</span>, leaves comments, and &mdash; if it&rsquo;s safe &mdash;
         the manager clicks <span class="hl-teal">Merge</span>.
       </p>
+      <svg class="branch-graph" viewBox="0 0 560 110" xmlns="http://www.w3.org/2000/svg" aria-label="Branch merge graph">
+        <text x="10" y="35" font-size="12" font-family="SF Mono, Monaco, monospace" fill="#a78bfa" font-weight="700">main</text>
+        <line x1="60" y1="30" x2="540" y2="30" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="90"  cy="30" r="6" fill="#a78bfa"/>
+        <circle cx="150" cy="30" r="6" fill="#a78bfa"/>
+        <circle cx="210" cy="30" r="6" fill="#a78bfa"/>
+        <path d="M 210 30 Q 245 30 260 65 L 380 65 Q 410 65 440 30"
+              stroke="#2dd4bf" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <circle cx="295" cy="65" r="6" fill="#2dd4bf"/>
+        <circle cx="350" cy="65" r="6" fill="#2dd4bf"/>
+        <circle cx="490" cy="30" r="9" fill="#3fb950" stroke="#0d1117" stroke-width="2.5"/>
+        <text x="220" y="93" font-size="11" font-family="SF Mono, Monaco, monospace" fill="#2dd4bf" font-weight="700">feature/login-screen</text>
+        <text x="455" y="20" font-size="10" font-family="SF Mono, Monaco, monospace" fill="#3fb950" font-weight="700">✓ merged!</text>
+      </svg>
       <div class="pr-mockup">
         <div class="pr-header">
           <span class="pr-status">Open</span>
@@ -1497,27 +1655,14 @@
         <div class="challenge-card easy">
           <div class="challenge-badge">🥉 EASY</div>
           <h3 class="challenge-title">Fetch &amp; Show</h3>
-          <p class="challenge-desc">
-            GET <code>fakestoreapi.com/products/1</code> and display
-            just the product <strong>title</strong> using FutureBuilder.
-          </p>
         </div>
         <div class="challenge-card medium">
           <div class="challenge-badge">🥈 MEDIUM</div>
           <h3 class="challenge-title">Product Card</h3>
-          <p class="challenge-desc">
-            Show the full product — <strong>image</strong>,
-            <strong>title</strong>, AND <strong>description</strong>
-            — inside a clean <code>Card</code> widget.
-          </p>
         </div>
         <div class="challenge-card hard">
           <div class="challenge-badge">🥇 HARD</div>
           <h3 class="challenge-title">Product List</h3>
-          <p class="challenge-desc">
-            Fetch <code>/products</code> (a list!) and render every
-            product in a scrollable <code>ListView</code>.
-          </p>
         </div>
       </div>
       <div class="game-footer">
