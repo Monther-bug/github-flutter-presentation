@@ -27,7 +27,7 @@ open index.html
 | 6  | A GET Request is Like Ordering Coffee ☕                 | Beginner analogy     |
 | 7  | What Comes Back? The Response                            | Status codes + body  |
 | 8  | Fetching Data: The GET Request                           | Dart code            |
-| 9  | Creating Data Models                                     | `fromJson` factory   |
+| 9  | Creating a Product Model                                 | `fromJson` factory   |
 | 10 | Putting It Together: FutureBuilder                       | UI + loading state   |
 
 Slides 6 and 7 are designed to make the jump into HTTP networking gentle —

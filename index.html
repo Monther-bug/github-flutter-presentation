@@ -1187,7 +1187,7 @@
           <div class="response-num">②</div>
           <div class="response-content">
             <div class="response-label">Body (the data)</div>
-            <div class="response-value json-block">{ "name": "Ada", "email": "ada@x.com" }</div>
+            <div class="response-value json-block">{ "title": "Coffee Mug", "description": "A nice mug.", "image": "mug.png" }</div>
             <div class="response-hint">The actual JSON we asked for.</div>
           </div>
         </div>
@@ -1225,37 +1225,38 @@
         <span class="code-lang">Dart</span>
 <pre><span class="kw">import</span> <span class="str">'package:http/http.dart'</span> <span class="kw">as</span> http;
 
-<span class="cls">Future</span>&lt;<span class="kw">void</span>&gt; <span class="fn">fetchUser</span>() <span class="kw">async</span> {
+<span class="cls">Future</span>&lt;<span class="kw">void</span>&gt; <span class="fn">fetchProduct</span>() <span class="kw">async</span> {
   <span class="kw">final</span> response = <span class="kw">await</span> http.<span class="fn">get</span>(
-    <span class="cls">Uri</span>.<span class="fn">parse</span>(<span class="str">'https://api.example.com/user/1'</span>),
+    <span class="cls">Uri</span>.<span class="fn">parse</span>(<span class="str">'https://api.example.com/products/1'</span>),
   );
 
   <span class="kw">if</span> (response.statusCode == <span class="num">200</span>) {
-    <span class="com">// Success! The server sent us data.</span>
+    <span class="com">// Success! The server sent us the product.</span>
     <span class="fn">print</span>(response.body);
   } <span class="kw">else</span> {
-    <span class="kw">throw</span> <span class="cls">Exception</span>(<span class="str">'Failed to load user'</span>);
+    <span class="kw">throw</span> <span class="cls">Exception</span>(<span class="str">'Failed to load product'</span>);
   }
 }</pre>
       </div>
     </section>
 
-    <!-- ===== SLIDE 7: DATA MODELS ===== -->
+    <!-- ===== SLIDE 9: DATA MODELS ===== -->
     <section class="slide">
       <span class="slide-number">09 / 10</span>
-      <h2 class="slide-title">Creating <span class="accent">Data Models</span></h2>
+      <h2 class="slide-title">Creating a <span class="accent">Product Model</span></h2>
       <p class="slide-text">
-        Flutter doesn&rsquo;t understand raw JSON strings natively. We must create a <strong>Model class</strong>
-        to convert the incoming JSON into a structured <span class="hl-purple">Dart object</span>
-        using a <code class="inline">fromJson</code> factory.
+        Flutter doesn&rsquo;t understand raw JSON strings natively. We build a <strong>Product class</strong>
+        with three fields &mdash; <span class="hl-teal">title</span>, <span class="hl-teal">description</span>,
+        and <span class="hl-teal">image</span> &mdash; and convert JSON into a real Dart object using a
+        <code class="inline">fromJson</code> factory.
       </p>
       <div class="json-flow">
         <div class="json-box source">
           <div class="json-box-title">📥 Raw JSON</div>
 <pre>{
-  <span class="prop">"id"</span>: <span class="num">1</span>,
-  <span class="prop">"name"</span>: <span class="str">"Ada"</span>,
-  <span class="prop">"email"</span>: <span class="str">"ada@x.com"</span>
+  <span class="prop">"title"</span>: <span class="str">"Coffee Mug"</span>,
+  <span class="prop">"description"</span>: <span class="str">"A nice mug."</span>,
+  <span class="prop">"image"</span>: <span class="str">"mug.png"</span>
 }</pre>
         </div>
         <div class="transform-arrow">
@@ -1263,28 +1264,28 @@
           <span class="label">fromJson()</span>
         </div>
         <div class="json-box target">
-          <div class="json-box-title">📦 User Object</div>
-<pre><span class="cls">User</span>(
-  id: <span class="num">1</span>,
-  name: <span class="str">'Ada'</span>,
-  email: <span class="str">'ada@x.com'</span>,
+          <div class="json-box-title">📦 Product Object</div>
+<pre><span class="cls">Product</span>(
+  title: <span class="str">'Coffee Mug'</span>,
+  description: <span class="str">'A nice mug.'</span>,
+  image: <span class="str">'mug.png'</span>,
 )</pre>
         </div>
       </div>
       <div class="code-block">
         <span class="code-lang">Dart</span>
-<pre><span class="kw">class</span> <span class="cls">User</span> {
-  <span class="kw">final</span> <span class="cls">int</span> id;
-  <span class="kw">final</span> <span class="cls">String</span> name;
-  <span class="kw">final</span> <span class="cls">String</span> email;
+<pre><span class="kw">class</span> <span class="cls">Product</span> {
+  <span class="kw">final</span> <span class="cls">String</span> title;
+  <span class="kw">final</span> <span class="cls">String</span> description;
+  <span class="kw">final</span> <span class="cls">String</span> image;
 
-  <span class="cls">User</span>({<span class="kw">required this</span>.id, <span class="kw">required this</span>.name, <span class="kw">required this</span>.email});
+  <span class="cls">Product</span>({<span class="kw">required this</span>.title, <span class="kw">required this</span>.description, <span class="kw">required this</span>.image});
 
-  <span class="kw">factory</span> <span class="cls">User</span>.<span class="fn">fromJson</span>(<span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="kw">dynamic</span>&gt; json) {
-    <span class="kw">return</span> <span class="cls">User</span>(
-      id: json[<span class="str">'id'</span>],
-      name: json[<span class="str">'name'</span>],
-      email: json[<span class="str">'email'</span>],
+  <span class="kw">factory</span> <span class="cls">Product</span>.<span class="fn">fromJson</span>(<span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="kw">dynamic</span>&gt; json) {
+    <span class="kw">return</span> <span class="cls">Product</span>(
+      title: json[<span class="str">'title'</span>],
+      description: json[<span class="str">'description'</span>],
+      image: json[<span class="str">'image'</span>],
     );
   }
 }</pre>
@@ -1309,19 +1310,24 @@
         <span class="state-arrow">→</span>
         <div class="state-card done">
           <span class="state-icon">✓</span>
-          <div class="state-label">Got the data!</div>
-          <div class="state-sub">show your text</div>
+          <div class="state-label">Got the product!</div>
+          <div class="state-sub">show image + title + description</div>
         </div>
       </div>
       <div class="code-block">
         <span class="code-lang">Dart</span>
 <pre><span class="cls">FutureBuilder</span>(
-  future: <span class="fn">fetchUser</span>(),
+  future: <span class="fn">fetchProduct</span>(),
   builder: (context, snapshot) {
     <span class="kw">if</span> (snapshot.hasData) {
-      <span class="kw">return</span> <span class="cls">Text</span>(<span class="str">'Hello, ${snapshot.data.name}!'</span>);  <span class="com">// Done!</span>
+      <span class="kw">final</span> product = snapshot.data;            <span class="com">// our Product object</span>
+      <span class="kw">return</span> <span class="cls">Column</span>(children: [
+        <span class="cls">Image</span>.<span class="fn">network</span>(product.image),         <span class="com">// the image</span>
+        <span class="cls">Text</span>(product.title),                  <span class="com">// the title</span>
+        <span class="cls">Text</span>(product.description),            <span class="com">// the description</span>
+      ]);
     }
-    <span class="kw">return</span> <span class="cls">CircularProgressIndicator</span>();  <span class="com">// Still loading…</span>
+    <span class="kw">return</span> <span class="cls">CircularProgressIndicator</span>();        <span class="com">// Still loading…</span>
   },
 )</pre>
       </div>
