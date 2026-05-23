@@ -15,7 +15,7 @@ Open `index.html` in any modern browser.
 open index.html
 ```
 
-## What's inside (10 slides)
+## What's inside (11 slides)
 
 | #  | Slide                                                    | Topic                |
 |----|----------------------------------------------------------|----------------------|
@@ -29,10 +29,12 @@ open index.html
 | 8  | Fetching Data: The GET Request                           | Dart code            |
 | 9  | Creating a Product Model                                 | `fromJson` factory   |
 | 10 | Putting It Together: FutureBuilder                       | UI + loading state   |
+| 11 | 🎮 Game Time!                                            | Hands-on challenges  |
 
 Slides 6 and 7 are designed to make the jump into HTTP networking gentle —
 they introduce the concept and the response structure visually before any
-Dart code appears.
+Dart code appears. Slide 11 closes the lesson with three difficulty-tiered
+build challenges (Easy / Medium / Hard) so students can put it all together.
 
 ## Design
 

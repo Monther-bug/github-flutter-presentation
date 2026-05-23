@@ -761,6 +761,152 @@
     font-style: italic;
   }
 
+  /* ===== Slides 9 + 10: side-by-side visual + code ===== */
+  .slide-grid {
+    display: grid;
+    grid-template-columns: minmax(220px, 280px) 1fr;
+    gap: 26px;
+    align-items: start;
+    margin-top: 10px;
+  }
+  .slide-grid .code-block { margin: 0; max-width: 100%; }
+  .json-flow-stack,
+  .state-flow-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .transform-arrow-v,
+  .state-arrow-v {
+    text-align: center;
+    color: var(--text-2);
+    font-size: 22px;
+    line-height: 1;
+  }
+  .transform-arrow-v .label {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 30px;
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 11px;
+    color: var(--purple);
+    font-weight: 600;
+    display: inline-block;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* ===== Slide 11: Game Time ===== */
+  .game-slide {
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+  }
+  .game-eyebrow {
+    color: var(--teal);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding: 8px 18px;
+    background: rgba(45, 212, 191, 0.08);
+    border: 1px solid rgba(45, 212, 191, 0.25);
+    border-radius: 30px;
+    display: inline-block;
+  }
+  .game-title {
+    font-size: clamp(48px, 7vw, 92px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    background: linear-gradient(135deg, #f472b6 0%, #c4b5fd 50%, #5eead4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 14px;
+  }
+  .game-subtitle {
+    font-size: 18px;
+    color: var(--text-2);
+    margin-bottom: 32px;
+    max-width: 620px;
+  }
+  .challenge-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto 28px;
+  }
+  .challenge-card {
+    background: var(--bg-2);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 18px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  .challenge-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(0,0,0,0.35);
+  }
+  .challenge-card.easy   { border-color: var(--green); }
+  .challenge-card.medium { border-color: var(--yellow); }
+  .challenge-card.hard   { border-color: var(--orange); }
+  .challenge-badge {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    padding: 5px 12px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-bottom: 12px;
+    font-family: -apple-system, sans-serif;
+  }
+  .challenge-card.easy   .challenge-badge { background: rgba(63,185,80,0.15);  color: var(--green);  }
+  .challenge-card.medium .challenge-badge { background: rgba(251,191,36,0.15); color: var(--yellow); }
+  .challenge-card.hard   .challenge-badge { background: rgba(249,115,22,0.15); color: var(--orange); }
+  .challenge-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .challenge-desc {
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.55;
+  }
+  .challenge-desc code {
+    background: #010409;
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--teal);
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 12px;
+    border: 1px solid var(--border);
+  }
+  .game-footer {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .footer-tag {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    color: var(--text-2);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
   /* ===== Code block ===== */
   .code-block {
     background: #010409;
@@ -982,7 +1128,7 @@
 
     <!-- ===== SLIDE 2: WORKFLOW ===== -->
     <section class="slide">
-      <span class="slide-number">02 / 10</span>
+      <span class="slide-number">02 / 11</span>
       <h2 class="slide-title">The <span class="accent">GitHub Team</span> Workflow</h2>
       <p class="slide-text">
         When working on a team, you <strong>never write code directly on the <code class="inline">main</code> branch</strong>.
@@ -1030,7 +1176,7 @@
 
     <!-- ===== SLIDE 3: ISSUES & BRANCHES ===== -->
     <section class="slide">
-      <span class="slide-number">03 / 10</span>
+      <span class="slide-number">03 / 11</span>
       <h2 class="slide-title">Issues, <span class="accent">Branch Names</span> &amp; Pushing</h2>
       <p class="slide-text">
         An <strong>Issue</strong> is a ticket describing a bug or a new feature &mdash; a written record of work to do.
@@ -1057,7 +1203,7 @@
 
     <!-- ===== SLIDE 4: PULL REQUESTS ===== -->
     <section class="slide">
-      <span class="slide-number">04 / 10</span>
+      <span class="slide-number">04 / 11</span>
       <h2 class="slide-title">Pull Requests &amp; <span class="accent-teal">Merging</span></h2>
       <p class="slide-text">
         A <strong>Pull Request (PR)</strong> is you asking your team:
@@ -1093,7 +1239,7 @@
 
     <!-- ===== SLIDE 5: PIVOT TO APIS ===== -->
     <section class="slide">
-      <span class="slide-number">05 / 10</span>
+      <span class="slide-number">05 / 11</span>
       <h2 class="slide-title">The Pivot: <span class="accent-teal">Connecting to APIs</span></h2>
       <p class="slide-text">
         Now that we can collaborate on code, let&rsquo;s make our apps <strong>talk to the internet</strong>!
@@ -1126,7 +1272,7 @@
 
     <!-- ===== SLIDE 6: GET REQUEST — COFFEE SHOP ANALOGY ===== -->
     <section class="slide">
-      <span class="slide-number">06 / 10</span>
+      <span class="slide-number">06 / 11</span>
       <h2 class="slide-title">A GET Request is Like <span class="accent">Ordering Coffee</span> ☕</h2>
       <p class="slide-text">
         A <strong>GET request</strong> is just a polite question to a server:
@@ -1164,7 +1310,7 @@
 
     <!-- ===== SLIDE 7: HTTP RESPONSE ANATOMY ===== -->
     <section class="slide">
-      <span class="slide-number">07 / 10</span>
+      <span class="slide-number">07 / 11</span>
       <h2 class="slide-title">What Comes Back? <span class="accent-teal">The Response</span></h2>
       <p class="slide-text">
         When the server answers, it always sends back two important pieces: a
@@ -1214,7 +1360,7 @@
 
     <!-- ===== SLIDE 8: GET REQUEST (CODE) ===== -->
     <section class="slide">
-      <span class="slide-number">08 / 10</span>
+      <span class="slide-number">08 / 11</span>
       <h2 class="slide-title">Fetching Data: <span class="accent">The GET Request</span></h2>
       <p class="slide-text">
         A <strong>GET request</strong> asks a server for data. Since downloading takes time
@@ -1242,44 +1388,46 @@
 
     <!-- ===== SLIDE 9: DATA MODELS ===== -->
     <section class="slide">
-      <span class="slide-number">09 / 10</span>
+      <span class="slide-number">09 / 11</span>
       <h2 class="slide-title">Creating a <span class="accent">Product Model</span></h2>
       <p class="slide-text">
-        Flutter doesn&rsquo;t understand raw JSON strings natively. We build a <strong>Product class</strong>
-        with three fields &mdash; <span class="hl-teal">title</span>, <span class="hl-teal">description</span>,
-        and <span class="hl-teal">image</span> &mdash; and convert JSON into a real Dart object using a
+        Build a <strong>Product class</strong> with three fields &mdash;
+        <span class="hl-teal">title</span>, <span class="hl-teal">description</span>, and
+        <span class="hl-teal">image</span> &mdash; then turn JSON into a real Dart object with a
         <code class="inline">fromJson</code> factory.
       </p>
-      <div class="json-flow">
-        <div class="json-box source">
-          <div class="json-box-title">📥 Raw JSON</div>
+      <div class="slide-grid">
+        <div class="json-flow-stack">
+          <div class="json-box source">
+            <div class="json-box-title">📥 Raw JSON</div>
 <pre>{
   <span class="prop">"title"</span>: <span class="str">"Coffee Mug"</span>,
   <span class="prop">"description"</span>: <span class="str">"A nice mug."</span>,
   <span class="prop">"image"</span>: <span class="str">"mug.png"</span>
 }</pre>
-        </div>
-        <div class="transform-arrow">
-          <span class="arrow">→</span>
-          <span class="label">fromJson()</span>
-        </div>
-        <div class="json-box target">
-          <div class="json-box-title">📦 Product Object</div>
+          </div>
+          <div class="transform-arrow-v">↓<span class="label">fromJson()</span></div>
+          <div class="json-box target">
+            <div class="json-box-title">📦 Product Object</div>
 <pre><span class="cls">Product</span>(
   title: <span class="str">'Coffee Mug'</span>,
   description: <span class="str">'A nice mug.'</span>,
   image: <span class="str">'mug.png'</span>,
 )</pre>
+          </div>
         </div>
-      </div>
-      <div class="code-block">
-        <span class="code-lang">Dart</span>
+        <div class="code-block">
+          <span class="code-lang">Dart</span>
 <pre><span class="kw">class</span> <span class="cls">Product</span> {
   <span class="kw">final</span> <span class="cls">String</span> title;
   <span class="kw">final</span> <span class="cls">String</span> description;
   <span class="kw">final</span> <span class="cls">String</span> image;
 
-  <span class="cls">Product</span>({<span class="kw">required this</span>.title, <span class="kw">required this</span>.description, <span class="kw">required this</span>.image});
+  <span class="cls">Product</span>({
+    <span class="kw">required this</span>.title,
+    <span class="kw">required this</span>.description,
+    <span class="kw">required this</span>.image,
+  });
 
   <span class="kw">factory</span> <span class="cls">Product</span>.<span class="fn">fromJson</span>(<span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="kw">dynamic</span>&gt; json) {
     <span class="kw">return</span> <span class="cls">Product</span>(
@@ -1289,47 +1437,93 @@
     );
   }
 }</pre>
+        </div>
       </div>
     </section>
 
     <!-- ===== SLIDE 10: FUTUREBUILDER ===== -->
     <section class="slide">
-      <span class="slide-number">10 / 10</span>
+      <span class="slide-number">10 / 11</span>
       <h2 class="slide-title">Putting It Together: <span class="accent-teal">FutureBuilder</span></h2>
       <p class="slide-text">
-        <strong>FutureBuilder</strong> is a magic Flutter widget that watches your
-        Future for you. You only need to tell it <span class="hl-orange">what to show while loading</span>,
-        and <span class="hl-teal">what to show when the data arrives</span>. That&rsquo;s it!
+        Just tell <strong>FutureBuilder</strong> two things:
+        <span class="hl-orange">what to show while loading</span>, and
+        <span class="hl-teal">what to show when the product arrives</span>. That&rsquo;s it!
       </p>
-      <div class="state-flow">
-        <div class="state-card loading">
-          <div class="loading-spinner"></div>
-          <div class="state-label">While loading…</div>
-          <div class="state-sub">show a spinner</div>
+      <div class="slide-grid">
+        <div class="state-flow-stack">
+          <div class="state-card loading">
+            <div class="loading-spinner"></div>
+            <div class="state-label">While loading…</div>
+            <div class="state-sub">show a spinner</div>
+          </div>
+          <div class="state-arrow-v">↓</div>
+          <div class="state-card done">
+            <span class="state-icon">✓</span>
+            <div class="state-label">Got the product!</div>
+            <div class="state-sub">show image + title + desc</div>
+          </div>
         </div>
-        <span class="state-arrow">→</span>
-        <div class="state-card done">
-          <span class="state-icon">✓</span>
-          <div class="state-label">Got the product!</div>
-          <div class="state-sub">show image + title + description</div>
-        </div>
-      </div>
-      <div class="code-block">
-        <span class="code-lang">Dart</span>
+        <div class="code-block">
+          <span class="code-lang">Dart</span>
 <pre><span class="cls">FutureBuilder</span>(
   future: <span class="fn">fetchProduct</span>(),
   builder: (context, snapshot) {
     <span class="kw">if</span> (snapshot.hasData) {
-      <span class="kw">final</span> product = snapshot.data;            <span class="com">// our Product object</span>
+      <span class="kw">final</span> p = snapshot.data;
       <span class="kw">return</span> <span class="cls">Column</span>(children: [
-        <span class="cls">Image</span>.<span class="fn">network</span>(product.image),         <span class="com">// the image</span>
-        <span class="cls">Text</span>(product.title),                  <span class="com">// the title</span>
-        <span class="cls">Text</span>(product.description),            <span class="com">// the description</span>
+        <span class="cls">Image</span>.<span class="fn">network</span>(p.image),
+        <span class="cls">Text</span>(p.title),
+        <span class="cls">Text</span>(p.description),
       ]);
     }
-    <span class="kw">return</span> <span class="cls">CircularProgressIndicator</span>();        <span class="com">// Still loading…</span>
+    <span class="kw">return</span> <span class="cls">CircularProgressIndicator</span>();
   },
 )</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 11: GAME TIME ===== -->
+    <section class="slide game-slide">
+      <span class="slide-number">11 / 11</span>
+      <div class="game-eyebrow">🎮 Your Turn</div>
+      <h2 class="game-title">GAME TIME!</h2>
+      <p class="game-subtitle">
+        Time to build your own. Pick a challenge level — open an issue,
+        branch, code it, and open a PR. 🚀
+      </p>
+      <div class="challenge-grid">
+        <div class="challenge-card easy">
+          <div class="challenge-badge">🥉 EASY</div>
+          <h3 class="challenge-title">Fetch &amp; Show</h3>
+          <p class="challenge-desc">
+            GET <code>fakestoreapi.com/products/1</code> and display
+            just the product <strong>title</strong> using FutureBuilder.
+          </p>
+        </div>
+        <div class="challenge-card medium">
+          <div class="challenge-badge">🥈 MEDIUM</div>
+          <h3 class="challenge-title">Product Card</h3>
+          <p class="challenge-desc">
+            Show the full product — <strong>image</strong>,
+            <strong>title</strong>, AND <strong>description</strong>
+            — inside a clean <code>Card</code> widget.
+          </p>
+        </div>
+        <div class="challenge-card hard">
+          <div class="challenge-badge">🥇 HARD</div>
+          <h3 class="challenge-title">Product List</h3>
+          <p class="challenge-desc">
+            Fetch <code>/products</code> (a list!) and render every
+            product in a scrollable <code>ListView</code>.
+          </p>
+        </div>
+      </div>
+      <div class="game-footer">
+        <span class="footer-tag">⏱ 30 minutes</span>
+        <span class="footer-tag">🤝 Pair up</span>
+        <span class="footer-tag">⎇ Push your branch &amp; open a PR</span>
       </div>
     </section>
 
