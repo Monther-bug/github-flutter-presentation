@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,7 +25,8 @@
 
   html, body { height: 100%; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI',
+                 'SF Arabic', 'Geeza Pro', 'Tahoma', 'Arial Unicode MS', sans-serif;
     background: var(--bg);
     background-image:
       radial-gradient(circle at 18% 12%, rgba(167, 139, 250, 0.14), transparent 50%),
@@ -41,18 +42,53 @@
     min-height: 100vh;
   }
 
-  /* Brand bar */
+  /* Brand bar (top-left in LTR, top-right in RTL) */
   .brand {
     position: fixed;
     top: 20px;
-    left: 24px;
+    inset-inline-start: 24px;
     font-size: 12px;
     font-weight: 700;
     color: var(--text-2);
     letter-spacing: 2px;
     z-index: 10;
   }
-  .brand .dot { color: var(--teal); margin-right: 6px; }
+  .brand .dot { color: var(--teal); margin-inline-end: 6px; }
+
+  /* Language switcher (top-right in LTR, top-left in RTL) */
+  .lang-switcher {
+    position: fixed;
+    top: 16px;
+    inset-inline-end: 20px;
+    display: flex;
+    gap: 2px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 4px;
+    z-index: 20;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  }
+  .lang-btn {
+    background: transparent;
+    color: var(--text-2);
+    border: none;
+    padding: 5px 12px;
+    border-radius: 18px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    min-width: 38px;
+    letter-spacing: 0.5px;
+  }
+  .lang-btn:hover:not(.active) { color: var(--text); }
+  .lang-btn.active {
+    background: linear-gradient(135deg, var(--purple), var(--teal));
+    color: white;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+  }
 
   /* Screens */
   .screen {
@@ -83,6 +119,8 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+  html[dir="rtl"] #welcome h1 { letter-spacing: 0; }
+
   .tagline {
     font-size: 19px;
     color: var(--text-2);
@@ -95,8 +133,8 @@
     border-radius: 14px;
     padding: 22px 28px;
     margin-bottom: 36px;
-    max-width: 520px;
-    text-align: left;
+    max-width: 540px;
+    text-align: start;
   }
   .how-to .h {
     font-weight: 700;
@@ -107,18 +145,20 @@
   .how-to ul { list-style: none; padding: 0; }
   .how-to li {
     color: var(--text-2);
-    line-height: 1.7;
+    line-height: 1.8;
     font-size: 14px;
-    padding-left: 22px;
+    padding-inline-start: 22px;
     position: relative;
   }
   .how-to li::before {
     content: '▸';
     position: absolute;
-    left: 0;
+    inset-inline-start: 0;
     color: var(--purple);
     font-weight: 700;
   }
+  html[dir="rtl"] .how-to li::before { content: '◂'; }
+
   .best-banner {
     font-size: 13px;
     color: var(--yellow);
@@ -144,6 +184,7 @@
     box-shadow: 0 10px 28px rgba(124, 58, 237, 0.4);
     font-family: inherit;
   }
+  html[dir="rtl"] .btn-primary { letter-spacing: 0; }
   .btn-primary:hover {
     transform: translateY(-3px) scale(1.03);
     box-shadow: 0 16px 36px rgba(124, 58, 237, 0.55);
@@ -165,13 +206,15 @@
     letter-spacing: 2px;
     color: var(--text-2);
     text-transform: uppercase;
+    white-space: nowrap;
   }
+  html[dir="rtl"] .stat { letter-spacing: 0; }
   .stat .val {
     color: var(--text);
     font-size: 22px;
     font-family: 'SF Mono', Monaco, monospace;
     font-weight: 800;
-    margin-left: 6px;
+    margin-inline-start: 6px;
     vertical-align: -2px;
   }
   .progress {
@@ -187,6 +230,10 @@
     background: linear-gradient(90deg, var(--purple), var(--teal));
     border-radius: 3px;
     transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  /* In RTL, fill from right to left visually */
+  html[dir="rtl"] .progress-fill {
+    background: linear-gradient(270deg, var(--purple), var(--teal));
   }
 
   .scenario {
@@ -224,7 +271,7 @@
   }
   .scenario-text {
     font-size: 22px;
-    line-height: 1.5;
+    line-height: 1.6;
     color: var(--text);
     max-width: 620px;
     margin: 0 auto;
@@ -259,11 +306,14 @@
   .ans:active:not(:disabled) { transform: translateY(-2px) scale(0.98); }
   .ans:disabled { cursor: not-allowed; opacity: 0.4; }
 
+  /* Status code numbers always stay LTR — they're numbers */
   .ans-num {
     font-size: 36px;
     font-weight: 900;
     font-family: 'SF Mono', Monaco, monospace;
     line-height: 1;
+    direction: ltr;
+    unicode-bidi: isolate;
   }
   .ans-name {
     font-size: 12px;
@@ -272,10 +322,12 @@
     text-transform: uppercase;
     color: var(--text-2);
   }
+  html[dir="rtl"] .ans-name { letter-spacing: 0; text-transform: none; font-size: 13px; }
+
   .ans-key {
     position: absolute;
     top: 8px;
-    right: 10px;
+    inset-inline-end: 10px;
     font-size: 10px;
     color: var(--text-2);
     font-family: 'SF Mono', monospace;
@@ -371,12 +423,15 @@
     border: 1px solid rgba(45, 212, 191, 0.3);
     border-radius: 30px;
   }
+  html[dir="rtl"] .end-eyebrow { letter-spacing: 0; }
+
   .final-score {
     display: flex;
     align-items: baseline;
     justify-content: center;
     gap: 6px;
     margin-bottom: 20px;
+    direction: ltr; /* keep score numbers in LTR order */
   }
   .final-score .num {
     font-size: clamp(72px, 12vw, 132px);
@@ -401,11 +456,14 @@
     margin-bottom: 8px;
     letter-spacing: -0.5px;
   }
+  html[dir="rtl"] .rank-title { letter-spacing: 0; }
+
   .rank-msg {
     font-size: 17px;
     color: var(--text-2);
     margin-bottom: 12px;
     max-width: 480px;
+    line-height: 1.6;
   }
   .new-best {
     color: var(--yellow);
@@ -420,6 +478,8 @@
     border-radius: 20px;
     display: inline-block;
   }
+  html[dir="rtl"] .new-best { letter-spacing: 0; }
+
   .new-best:empty { display: none; margin-bottom: 0; }
   .end-actions {
     display: flex;
@@ -454,7 +514,11 @@
     color: var(--text-2);
     opacity: 0.55;
     letter-spacing: 1px;
+    text-align: center;
+    white-space: nowrap;
   }
+  html[dir="rtl"] .key-hint { letter-spacing: 0; }
+
   .key-hint .k {
     background: var(--bg-3);
     border: 1px solid var(--border);
@@ -464,6 +528,7 @@
     font-family: 'SF Mono', monospace;
     font-size: 10px;
     margin: 0 2px;
+    display: inline-block;
   }
 
   /* Mobile */
@@ -484,28 +549,33 @@
 </head>
 <body>
 
-  <div class="brand"><span class="dot">●</span>STATUS CODE SHOWDOWN</div>
+  <div class="brand"><span class="dot">●</span><span data-i18n="brand">STATUS CODE SHOWDOWN</span></div>
+
+  <div class="lang-switcher" role="group" aria-label="Language">
+    <button class="lang-btn" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="ar">عربي</button>
+  </div>
 
   <!-- ===== Welcome ===== -->
   <section id="welcome" class="screen active">
-    <h1>STATUS CODE<br>SHOWDOWN</h1>
-    <p class="tagline">Can you guess the right HTTP status code?<br>Read the scenario. Pick fast. Score big. 🏆</p>
+    <h1 data-i18n="title">STATUS CODE<br>SHOWDOWN</h1>
+    <p class="tagline" data-i18n="tagline">Can you guess the right HTTP status code?<br>Read the scenario. Pick fast. Score big. 🏆</p>
     <div class="how-to">
-      <div class="h">📖 How to play</div>
+      <div class="h" data-i18n="howToTitle">📖 How to play</div>
       <ul>
-        <li>You'll get <strong>10 silly scenarios</strong>.</li>
-        <li>Pick the right code: <strong style="color:var(--green)">200</strong>, <strong style="color:var(--yellow)">404</strong>, or <strong style="color:var(--red)">500</strong>.</li>
-        <li>Hint: 200 = "all good", 404 = "doesn't exist", 500 = "server broke".</li>
+        <li data-i18n="howTo1">You'll get <strong>10 silly scenarios</strong>.</li>
+        <li data-i18n="howTo2">Pick the right code: <strong style="color:var(--green)">200</strong>, <strong style="color:var(--yellow)">404</strong>, or <strong style="color:var(--red)">500</strong>.</li>
+        <li data-i18n="howTo3">Hint: 200 = "all good", 404 = "doesn't exist", 500 = "server broke".</li>
       </ul>
     </div>
     <div class="best-banner" id="best-welcome"></div>
-    <button class="btn-primary" id="btn-start">START GAME</button>
+    <button class="btn-primary" id="btn-start" data-i18n="startGame">START GAME</button>
   </section>
 
   <!-- ===== Game ===== -->
   <section id="game" class="screen">
     <div class="top-bar">
-      <div class="stat">Score<span class="val" id="score">0</span></div>
+      <div class="stat"><span data-i18n="score">Score</span><span class="val" id="score">0</span></div>
       <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
       <div class="stat"><span class="val" id="q-num">1</span> / 10</div>
     </div>
@@ -519,17 +589,17 @@
       <button class="ans ans-200" data-code="200">
         <span class="ans-key">1</span>
         <span class="ans-num">200</span>
-        <span class="ans-name">OK</span>
+        <span class="ans-name" data-i18n="ans200Name">OK</span>
       </button>
       <button class="ans ans-404" data-code="404">
         <span class="ans-key">2</span>
         <span class="ans-num">404</span>
-        <span class="ans-name">Not Found</span>
+        <span class="ans-name" data-i18n="ans404Name">Not Found</span>
       </button>
       <button class="ans ans-500" data-code="500">
         <span class="ans-key">3</span>
         <span class="ans-num">500</span>
-        <span class="ans-name">Server Error</span>
+        <span class="ans-name" data-i18n="ans500Name">Server Error</span>
       </button>
     </div>
 
@@ -538,57 +608,158 @@
 
   <!-- ===== End ===== -->
   <section id="end" class="screen">
-    <div class="end-eyebrow">🎮 Game Over</div>
+    <div class="end-eyebrow" data-i18n="gameOver">🎮 Game Over</div>
     <div class="final-score">
       <span class="num" id="final-num">0</span>
       <span class="total">/ 10</span>
     </div>
     <div class="rank-emoji" id="rank-emoji">🏆</div>
-    <div class="rank-title" id="rank-title">HTTP Grandmaster</div>
-    <div class="rank-msg" id="rank-msg">You ARE the status code.</div>
+    <div class="rank-title" id="rank-title"></div>
+    <div class="rank-msg" id="rank-msg"></div>
     <div class="new-best" id="new-best"></div>
     <div class="end-actions">
-      <button class="btn-primary" id="btn-restart">PLAY AGAIN</button>
-      <a class="btn-back" href="../">← Back to Lecture</a>
+      <button class="btn-primary" id="btn-restart" data-i18n="playAgain">PLAY AGAIN</button>
+      <a class="btn-back" id="btn-back" href="../" data-i18n="backToLecture">← Back to Lecture</a>
     </div>
   </section>
 
-  <div class="key-hint">
+  <div class="key-hint" id="key-hint" data-i18n="keyHint">
     Press <span class="k">1</span> <span class="k">2</span> <span class="k">3</span> to answer · <span class="k">Enter</span> to start/restart
   </div>
 
 <script>
-  // ===== Scenarios (a bit silly on purpose) =====
+  // ===== I18N: UI strings =====
+  const I18N = {
+    en: {
+      brand: 'STATUS CODE SHOWDOWN',
+      title: 'STATUS CODE<br>SHOWDOWN',
+      tagline: 'Can you guess the right HTTP status code?<br>Read the scenario. Pick fast. Score big. 🏆',
+      howToTitle: '📖 How to play',
+      howTo1: 'You\'ll get <strong>10 silly scenarios</strong>.',
+      howTo2: 'Pick the right code: <strong style="color:var(--green)">200</strong>, <strong style="color:var(--yellow)">404</strong>, or <strong style="color:var(--red)">500</strong>.',
+      howTo3: 'Hint: 200 = "all good", 404 = "doesn\'t exist", 500 = "server broke".',
+      bestLabel: '🏆 Personal best',
+      startGame: 'START GAME',
+      score: 'Score',
+      ans200Name: 'OK',
+      ans404Name: 'Not Found',
+      ans500Name: 'Server Error',
+      feedbackCorrect: '✓ Correct!',
+      feedbackWrong: '✗ Nope — it was {code}',
+      gameOver: '🎮 Game Over',
+      newBest: '✨ NEW PERSONAL BEST!',
+      playAgain: 'PLAY AGAIN',
+      backToLecture: '← Back to Lecture',
+      keyHint: 'Press <span class="k">1</span> <span class="k">2</span> <span class="k">3</span> to answer · <span class="k">Enter</span> to start/restart',
+    },
+    ar: {
+      brand: 'مواجهة رموز الحالة',
+      title: 'مواجهة<br>رموز الحالة',
+      tagline: 'هل تستطيع تخمين رمز حالة HTTP الصحيح؟<br>اقرأ السيناريو، اختر بسرعة، اجمع النقاط! 🏆',
+      howToTitle: '📖 طريقة اللعب',
+      howTo1: 'ستحصل على <strong>10 سيناريوهات مضحكة</strong>.',
+      howTo2: 'اختر الرمز الصحيح: <strong style="color:var(--green)">200</strong> أو <strong style="color:var(--yellow)">404</strong> أو <strong style="color:var(--red)">500</strong>.',
+      howTo3: 'تلميح: 200 تعني "كل شيء تمام"، و404 تعني "غير موجود"، و500 تعني "الخادم تعطّل".',
+      bestLabel: '🏆 أفضل نتيجة',
+      startGame: 'ابدأ اللعبة',
+      score: 'النقاط',
+      ans200Name: 'تمام',
+      ans404Name: 'غير موجود',
+      ans500Name: 'خطأ بالخادم',
+      feedbackCorrect: '✓ إجابة صحيحة!',
+      feedbackWrong: '✗ خطأ — الإجابة كانت {code}',
+      gameOver: '🎮 انتهت اللعبة',
+      newBest: '✨ أفضل نتيجة شخصية جديدة!',
+      playAgain: 'العب مرة أخرى',
+      backToLecture: 'العودة إلى المحاضرة ←',
+      keyHint: 'اضغط <span class="k">1</span> <span class="k">2</span> <span class="k">3</span> للإجابة · <span class="k">Enter</span> للبدء أو الإعادة',
+    },
+  };
+
+  // ===== Scenarios (bilingual) =====
   const SCENARIOS = [
-    { emoji: '📦', text: 'You ask: "Give me product #1." Server: "Here you go!"',                        code: 200 },
-    { emoji: '🦄', text: 'You GET /unicorns/1. There are no unicorns on this server.',                   code: 404 },
-    { emoji: '🔥', text: 'You ask for products. The data center is literally on fire.',                  code: 500 },
-    { emoji: '☕', text: 'You order a latte. The barista hands it over with a smile.',                   code: 200 },
-    { emoji: '🍕', text: 'You ask for /pizza/menu. That URL doesn\'t exist on this site.',               code: 404 },
-    { emoji: '💥', text: 'You ask for users. The database just exploded mid-request.',                   code: 500 },
-    { emoji: '🐱', text: 'You GET /cats/cute. Server returns 10 very cute cats.',                        code: 200 },
-    { emoji: '🤖', text: 'You ask the AI server something. It overloaded and crashed.',                  code: 500 },
-    { emoji: '🛍️', text: 'You request /products/42. Server says: "Item 42, coming up!"',                code: 200 },
-    { emoji: '🔍', text: 'You ask for /admin/secret-pizza-menu. No such page exists.',                   code: 404 },
-    { emoji: '⚡', text: 'Server got struck by lightning while handling your request.',                  code: 500 },
-    { emoji: '🚫', text: 'You misspelled the URL: /produts/1 (missing the c).',                          code: 404 },
-    { emoji: '🐛', text: 'A bug in the server code made the whole thing crash.',                         code: 500 },
-    { emoji: '🎯', text: 'Your request hit the right endpoint. Everything works perfectly.',             code: 200 },
-    { emoji: '🍔', text: 'You GET /burger/123, but burger #123 was deleted last year.',                  code: 404 },
-    { emoji: '🚀', text: 'Your app fetches the homepage. Server returns the homepage.',                  code: 200 },
-    { emoji: '👻', text: 'You ask for a friend\'s old blog post. The URL is gone forever.',              code: 404 },
-    { emoji: '💣', text: 'The server\'s memory ran out and it blew up mid-response.',                    code: 500 },
-    { emoji: '🎁', text: 'You request a gift list from the API. Server delivers it.',                    code: 200 },
-    { emoji: '😱', text: 'The server tried to divide by zero and panicked.',                             code: 500 },
+    { emoji: '📦', code: 200,
+      en: 'You ask: "Give me product #1." Server: "Here you go!"',
+      ar: 'تطلب: «أعطني المنتج رقم 1». الخادم: «تفضّل!»' },
+    { emoji: '🦄', code: 404,
+      en: 'You GET /unicorns/1. There are no unicorns on this server.',
+      ar: 'تطلب ‎/unicorns/1‎. لا يوجد وحيد قرن على هذا الخادم.' },
+    { emoji: '🔥', code: 500,
+      en: 'You ask for products. The data center is literally on fire.',
+      ar: 'تطلب المنتجات. مركز البيانات يحترق فعليّاً!' },
+    { emoji: '☕', code: 200,
+      en: 'You order a latte. The barista hands it over with a smile.',
+      ar: 'تطلب كوب لاتيه. النادل يقدّمه لك بابتسامة.' },
+    { emoji: '🍕', code: 404,
+      en: 'You ask for /pizza/menu. That URL doesn\'t exist on this site.',
+      ar: 'تطلب ‎/pizza/menu‎. هذا الرابط غير موجود على الموقع.' },
+    { emoji: '💥', code: 500,
+      en: 'You ask for users. The database just exploded mid-request.',
+      ar: 'تطلب المستخدمين. قاعدة البيانات انفجرت أثناء الطلب!' },
+    { emoji: '🐱', code: 200,
+      en: 'You GET /cats/cute. Server returns 10 very cute cats.',
+      ar: 'تطلب ‎/cats/cute‎. الخادم يرسل 10 قطط لطيفة جدّاً.' },
+    { emoji: '🤖', code: 500,
+      en: 'You ask the AI server something. It overloaded and crashed.',
+      ar: 'تسأل خادم الذكاء الاصطناعي شيئاً. تحمَّل أكثر من اللازم وانهار.' },
+    { emoji: '🛍️', code: 200,
+      en: 'You request /products/42. Server says: "Item 42, coming up!"',
+      ar: 'تطلب ‎/products/42‎. الخادم يقول: «المنتج 42، جاهز!»' },
+    { emoji: '🔍', code: 404,
+      en: 'You ask for /admin/secret-pizza-menu. No such page exists.',
+      ar: 'تطلب ‎/admin/secret-pizza-menu‎. لا توجد صفحة بهذا الاسم.' },
+    { emoji: '⚡', code: 500,
+      en: 'Server got struck by lightning while handling your request.',
+      ar: 'ضربت صاعقة الخادم أثناء معالجة طلبك!' },
+    { emoji: '🚫', code: 404,
+      en: 'You misspelled the URL: /produts/1 (missing the c).',
+      ar: 'أخطأت في كتابة الرابط: ‎/produts/1‎ (نسيت حرف c).' },
+    { emoji: '🐛', code: 500,
+      en: 'A bug in the server code made the whole thing crash.',
+      ar: 'خطأ برمجي في الخادم تسبَّب في انهيار كل شيء.' },
+    { emoji: '🎯', code: 200,
+      en: 'Your request hit the right endpoint. Everything works perfectly.',
+      ar: 'طلبك وصل إلى المكان الصحيح. كل شيء يعمل بشكل ممتاز.' },
+    { emoji: '🍔', code: 404,
+      en: 'You GET /burger/123, but burger #123 was deleted last year.',
+      ar: 'تطلب ‎/burger/123‎، لكن البرغر رقم 123 حُذف العام الماضي.' },
+    { emoji: '🚀', code: 200,
+      en: 'Your app fetches the homepage. Server returns the homepage.',
+      ar: 'تطبيقك يطلب الصفحة الرئيسية. الخادم يرسلها فوراً.' },
+    { emoji: '👻', code: 404,
+      en: 'You ask for a friend\'s old blog post. The URL is gone forever.',
+      ar: 'تطلب مقال صديقك القديم. الرابط اختفى إلى الأبد.' },
+    { emoji: '💣', code: 500,
+      en: 'The server\'s memory ran out and it blew up mid-response.',
+      ar: 'نفدت ذاكرة الخادم فانفجر أثناء الرد!' },
+    { emoji: '🎁', code: 200,
+      en: 'You request a gift list from the API. Server delivers it.',
+      ar: 'تطلب قائمة هدايا من الـ API. الخادم يسلِّمها.' },
+    { emoji: '😱', code: 500,
+      en: 'The server tried to divide by zero and panicked.',
+      ar: 'حاول الخادم القسمة على صفر فأصابه الذعر!' },
   ];
 
+  // ===== Ranks (bilingual) =====
   const RANKS = [
-    { min: 10, emoji: '🏆', title: 'HTTP GRANDMASTER',     msg: 'You ARE the status code. Untouchable.' },
-    { min: 9,  emoji: '🚀', title: 'Backend Wizard',        msg: 'Your responses are 200 OK across the board.' },
-    { min: 7,  emoji: '💪', title: 'Solid Dev',             msg: "You'd survive any code review." },
-    { min: 5,  emoji: '🤔', title: 'Junior Dev',            msg: 'Decent! Maybe revisit slide 7 once.' },
-    { min: 3,  emoji: '🚨', title: 'Throwing 500s',         msg: 'The server keeps catching fire. Coffee?' },
-    { min: 0,  emoji: '💀', title: 'Total System Crash',    msg: 'You crashed harder than the server did.' },
+    { min: 10, emoji: '🏆',
+      en: { title: 'HTTP GRANDMASTER',    msg: 'You ARE the status code. Untouchable.' },
+      ar: { title: 'معلّم HTTP الأكبر',    msg: 'أنت رمز الحالة بنفسك! لا تُمَس.' } },
+    { min: 9,  emoji: '🚀',
+      en: { title: 'Backend Wizard',       msg: 'Your responses are 200 OK across the board.' },
+      ar: { title: 'ساحر الخوادم',          msg: 'كل ردودك 200 OK من البداية للنهاية!' } },
+    { min: 7,  emoji: '💪',
+      en: { title: 'Solid Dev',            msg: "You'd survive any code review." },
+      ar: { title: 'مطوّر متمكِّن',          msg: 'ستنجو من أي مراجعة كود!' } },
+    { min: 5,  emoji: '🤔',
+      en: { title: 'Junior Dev',           msg: 'Decent! Maybe revisit slide 7 once.' },
+      ar: { title: 'مطوّر مبتدئ',           msg: 'لا بأس! ربما تراجع الشريحة 7 مرة أخرى.' } },
+    { min: 3,  emoji: '🚨',
+      en: { title: 'Throwing 500s',        msg: 'The server keeps catching fire. Coffee?' },
+      ar: { title: 'ترمي أخطاء 500',        msg: 'الخادم يشتعل باستمرار. ما رأيك بقهوة؟' } },
+    { min: 0,  emoji: '💀',
+      en: { title: 'Total System Crash',   msg: 'You crashed harder than the server did.' },
+      ar: { title: 'انهيار كامل للنظام',     msg: 'تعطَّلت أكثر من الخادم نفسه!' } },
   ];
 
   const TOTAL_QUESTIONS = 10;
@@ -601,6 +772,8 @@
     locked: false,
   };
 
+  let currentLang = localStorage.getItem('scs-lang') || 'en';
+
   // ===== DOM =====
   const $ = (id) => document.getElementById(id);
   const screens = { welcome: $('welcome'), game: $('game'), end: $('end') };
@@ -611,7 +784,43 @@
   }
 
   function activeScreen() {
-    return Object.entries(screens).find(([, el]) => el.classList.contains('active'))[0];
+    const entry = Object.entries(screens).find(([, el]) => el.classList.contains('active'));
+    return entry ? entry[0] : null;
+  }
+
+  // ===== Language switching =====
+  function t(key) { return (I18N[currentLang] && I18N[currentLang][key]) || I18N.en[key] || key; }
+
+  function applyLanguage(lang) {
+    if (!I18N[lang]) lang = 'en';
+    currentLang = lang;
+    localStorage.setItem('scs-lang', lang);
+
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+    // Static i18n elements
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      const value = t(key);
+      if (value !== undefined) el.innerHTML = value;
+    });
+
+    // Page title
+    document.title = lang === 'ar'
+      ? 'مواجهة رموز الحالة — لعبة HTTP مرحة'
+      : 'Status Code Showdown — A funny HTTP quiz';
+
+    // Language buttons
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+
+    // Re-render dynamic screens
+    renderBestOnWelcome();
+    const screen = activeScreen();
+    if (screen === 'game' && state.questions.length > 0) refreshQuestionText();
+    if (screen === 'end') renderEndScreen();
   }
 
   // ===== High score (localStorage) =====
@@ -627,7 +836,7 @@
   }
   function renderBestOnWelcome() {
     const best = getBest();
-    $('best-welcome').textContent = best > 0 ? `🏆 Personal best: ${best} / ${TOTAL_QUESTIONS}` : '';
+    $('best-welcome').textContent = best > 0 ? `${t('bestLabel')}: ${best} / ${TOTAL_QUESTIONS}` : '';
   }
 
   // ===== Game flow =====
@@ -648,11 +857,16 @@
     renderQuestion();
   }
 
+  function refreshQuestionText() {
+    const q = state.questions[state.current];
+    if (q) $('text').textContent = q[currentLang] || q.en;
+  }
+
   function renderQuestion() {
     state.locked = false;
     const q = state.questions[state.current];
     $('emoji').textContent = q.emoji;
-    $('text').textContent = q.text;
+    $('text').textContent = q[currentLang] || q.en;
     $('score').textContent = state.score;
     $('q-num').textContent = state.current + 1;
     $('progress-fill').style.width = ((state.current) / TOTAL_QUESTIONS * 100) + '%';
@@ -675,12 +889,12 @@
 
     if (isCorrect) {
       state.score++;
-      $('feedback').textContent = '✓ Correct!';
+      $('feedback').textContent = t('feedbackCorrect');
       $('feedback').className = 'feedback show good';
       $('scenario').classList.add('pulse-good');
       confettiRain();
     } else {
-      $('feedback').textContent = `✗ Nope — it was ${q.code}`;
+      $('feedback').textContent = t('feedbackWrong').replace('{code}', q.code);
       $('feedback').className = 'feedback show bad';
       $('scenario').classList.add('shake');
     }
@@ -705,14 +919,22 @@
     }, 1700);
   }
 
+  let lastScoreWasBest = false;
+
   function endGame() {
+    lastScoreWasBest = maybeSetBest(state.score);
+    showScreen('end');
+    renderEndScreen();
+  }
+
+  function renderEndScreen() {
     const rank = RANKS.find(r => state.score >= r.min);
+    const rankData = rank[currentLang] || rank.en;
     $('final-num').textContent = state.score;
     $('rank-emoji').textContent = rank.emoji;
-    $('rank-title').textContent = rank.title;
-    $('rank-msg').textContent = rank.msg;
-    $('new-best').textContent = maybeSetBest(state.score) ? '✨ NEW PERSONAL BEST!' : '';
-    showScreen('end');
+    $('rank-title').textContent = rankData.title;
+    $('rank-msg').textContent = rankData.msg;
+    $('new-best').textContent = lastScoreWasBest ? t('newBest') : '';
   }
 
   // ===== Effects =====
@@ -736,6 +958,9 @@
   document.querySelectorAll('.ans').forEach(btn => {
     btn.addEventListener('click', () => answer(parseInt(btn.dataset.code, 10)));
   });
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => applyLanguage(btn.dataset.lang));
+  });
 
   document.addEventListener('keydown', (e) => {
     const screen = activeScreen();
@@ -749,8 +974,8 @@
     }
   });
 
-  // Init
-  renderBestOnWelcome();
+  // Init — apply saved or default language
+  applyLanguage(currentLang);
 </script>
 </body>
 </html>
